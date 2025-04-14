@@ -76,22 +76,22 @@ def main():
 
         - **Tamanho Nominal Parafuso** — O Tamanho nominal do parafuso segundo o sistema métrico.
 
-        - **Coeficiente de torque (Fator K)** — Coeficiente entre o torque aplicado e a força axial resultante no parafuso. É função das características de atrito dos materiais (acabamento superficial, revestimentos etc.). Esse valor resulta de uma combinação dos fatores de atrito geométrico, na rosca e na face de apoio.
+        - **Coeficiente de torque (Fator K)** — Coeficiente entre o torque aplicado e a força axial resultante no parafuso. É função das características de atrito dos materiais (acabamento superficial, revestimentos, etc). Esse valor resulta de uma combinação dos fatores de atrito geométrico, na rosca e na face de apoio.
         Um valor comumente usado é 0,2. O método mais confiável de determinar esse valor é através de testes. Contudo, como este software não é para uso em procedimentos críticos, o valor padrão foi assumido.''')
 
         st.markdown('### 📐 Premissas')
         st.markdown('''
-        - As roscas estão completamente engajadas. O comprimento de engajamento é igual à espessura da peça e ao comprimento da rosca do parafuso.
-        - O parafuso é completamente roscado.
-        - A resistência ao cisalhamento do aço carbono é igual a 60% da resistência à tração:
-        - A resistência ao cisalhamento do aço inoxidável é igual a 55% da resistência à tração:
+        - As roscas estão completamente engajadas.
+        - O parafuso está completamente roscado.
+        - A resistência ao cisalhamento do aço carbono é igual a 60% da resistência à tração.
+        - A resistência ao cisalhamento do aço inoxidável é igual a 55% da resistência à tração.
         - O material do parafuso é mais resistente que o material base.
-        - Parafusos de aço inoxidável com limite de escoamento de 1.241 MPa.
+        - Parafusos de aço inoxidável com limite de escoamento de 1241 MPa.
         - Os parafusos são rosqueados diretamente no material base (sem inserto).
         - Roscas classe 2A.
-        - 65% da carga de tração é usada para cálculo do torque de montagem
+        - 65% da carga de tração é usada para cálculo do torque de montagem.
         - Mínimo de 3 filetes de rosca engajados.
-        - Coeficiente de torque (K) = 0,2
+        - Coeficiente de torque (K) = 0,2.
         ''')
 
         st.markdown('### 🔩 Resistências ao Cisalhamento')
