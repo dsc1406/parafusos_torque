@@ -1,15 +1,10 @@
 import streamlit as st
 import pandas as pd
 import os
-from Home import inicialização
 
 def soma_lista_segura (lista):
     valores_validos = [x for x in lista if x is not None and not pd.isna(x)]
     return sum(valores_validos)
-
-def highlight_ancoragem(val):
-    color = 'red' if val < 10 else 'black'
-    return f'color: {color}'
 
 def main():
 
