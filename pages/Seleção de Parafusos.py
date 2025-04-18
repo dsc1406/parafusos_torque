@@ -33,15 +33,19 @@ def main():
             with col1:
                 with st.container(border=True):
                     tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', df_parafusos['Tamanho'].unique().tolist(), placeholder='Selecione o Tamanho do Parafuso'),
-                    quantidade_chapas = st.number_input('Quantidade de Chapas', min_value=1, step=1, placeholder='Numero de Chapas a ser Fixadas')
-
-                with st.container(border=True):
                     
-                    if quantidade_chapas != None:
-                            esp = []                            
-                            for i in range(quantidade_chapas):
-                                valor = st.number_input(f"Espessura da Chapa {i+1}", min_value=0.0, value=None, placeholder='Espessura em mm...', key=f"var_{i}")
-                                esp.append(valor)
+                    quantidade_chapas = st.number_input('Quantidade de Chapas', min_value=1, step=1,
+                        value=st.session_state.get("quantidade_chapas", 1), placeholder='Numero de Chapas a ser Fixadas')
+                    st.session_state["quantidade_chapas"] = quantidade_chapas
+                      
+                    if quantidade_chapas != None:                            
+                        esp = []
+                        for i in range(quantidade_chapas):
+                            valor = st.number_input(f"Espessura da Chapa {i+1}", min_value=0.0,
+                                value=st.session_state.get(f"esp_{i}", 0.0), placeholder='Espessura em mm...', key=f"var_{i}")
+                            st.session_state[f"esp_{i}"] = valor
+                            esp.append(valor)
+
 
             with col2:                
                 with st.container(border=True):

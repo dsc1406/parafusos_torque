@@ -28,12 +28,26 @@ def main():
             
             col = st.columns(2)
             with col[0]:
-                material = st.selectbox('Material do Parafuso', materiais_disponiveis, index=None, placeholder='Selecione o Material')
-                rosca_engajada = st.number_input('Comprimento de Rosca Engajada (mm)', min_value=0.0, step=0.1, value=None, placeholder='Digite o Comprimento da Rosca')
-                calcular = st.button('Calcular')
                 
+                material = st.selectbox('Material do Parafuso', materiais_disponiveis,
+                    index=materiais_disponiveis.index(st.session_state.get("material")) if st.session_state.get("material") in materiais_disponiveis else None,
+                    placeholder='Selecione o Material')
+                st.session_state["material"] = material
+
+                
+                rosca_engajada = st.number_input('Comprimento de Rosca Engajada (mm)', min_value=0.0, step=0.1,
+                    value=st.session_state.get("rosca_engajada", 0.0), placeholder='Digite o Comprimento da Rosca')
+                st.session_state["rosca_engajada"] = rosca_engajada
+
+                calcular = st.button('Calcular')
+                                
             with col[1]:
-                tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', tamanhos_disponiveis, index=None, placeholder='Selecione o Tamanho do Parafuso')
+                
+                tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', tamanhos_disponiveis,
+                    index=tamanhos_disponiveis.index(st.session_state.get("tamanho_parafuso")) if st.session_state.get("tamanho_parafuso") in tamanhos_disponiveis else None,
+                    placeholder='Selecione o Tamanho do Parafuso')
+                st.session_state["tamanho_parafuso"] = tamanho_parafuso
+
                 fator_K = st.number_input('Fator K', value=0.2, disabled=True)
                 selecao_parafuso = st.button('Cálculo de Rosca Engajada - Seleção de Parafuso')
 
