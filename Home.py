@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 def main():  
-    st.set_page_config(page_title="Cálculo de Torque Parafusos", layout="wide", page_icon='🔧')
+    st.set_page_config(page_title="BoltMate - Cálculo de Torque", layout="wide", page_icon='🔧')
 
     dados = {
     "Material": ["ASTM A36", "Aço Inoxidável 304"],
@@ -21,8 +21,8 @@ def main():
     col = st.columns([0.1,0.8,0.1])
 
     with col[1]:    
-        st.title('🔧Calculadora de Torque em Parafusos🔧') 
-        st.caption("Desenvolvido por Diego Carneiro · 2025")
+        st.title('🔧BoltMate - Calculadora de Torque em Parafusos🔧') 
+        st.caption("Desenvolvido por Diego Carneiro · 2025 - App: BoltMate")
 
         with st.container(border=True):
             
@@ -31,10 +31,11 @@ def main():
                 material = st.selectbox('Material do Parafuso', materiais_disponiveis, index=None, placeholder='Selecione o Material')
                 rosca_engajada = st.number_input('Comprimento de Rosca Engajada (mm)', min_value=0.0, step=0.1, value=None, placeholder='Digite o Comprimento da Rosca')
                 calcular = st.button('Calcular')
-
+                
             with col[1]:
                 tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', tamanhos_disponiveis, index=None, placeholder='Selecione o Tamanho do Parafuso')
                 fator_K = st.number_input('Fator K', value=0.2, disabled=True)
+                selecao_parafuso = st.button('Cálculo de Rosca Engajada - Seleção de Parafuso')
 
         if calcular: 
             if material != None and tamanho_parafuso != None:     
@@ -65,6 +66,9 @@ def main():
             else:
                 st.warning('Preencha todos os valores para realizar o cálculo')
         
+        if selecao_parafuso:
+            st.switch_page('pages/Seleção de Parafusos.py')
+
         st.divider()
         st.markdown('### 📘Definições')
         st.markdown('''
@@ -76,22 +80,22 @@ def main():
 
         - **Tamanho Nominal Parafuso** — O Tamanho nominal do parafuso segundo o sistema métrico.
 
-        - **Coeficiente de torque (Fator K)** — Coeficiente entre o torque aplicado e a força axial resultante no parafuso. É função das características de atrito dos materiais (acabamento superficial, revestimentos, etc). Esse valor resulta de uma combinação dos fatores de atrito geométrico, na rosca e na face de apoio.
+        - **Coeficiente de torque (Fator K)** — Coeficiente entre o torque aplicado e a força axial resultante no parafuso. É função das características de atrito dos materiais (acabamento superficial, revestimentos etc.). Esse valor resulta de uma combinação dos fatores de atrito geométrico, na rosca e na face de apoio.
         Um valor comumente usado é 0,2. O método mais confiável de determinar esse valor é através de testes. Contudo, como este software não é para uso em procedimentos críticos, o valor padrão foi assumido.''')
 
         st.markdown('### 📐 Premissas')
         st.markdown('''
-        - As roscas estão completamente engajadas.
-        - O parafuso está completamente roscado.
-        - A resistência ao cisalhamento do aço carbono é igual a 60% da resistência à tração.
-        - A resistência ao cisalhamento do aço inoxidável é igual a 55% da resistência à tração.
+        - As roscas estão completamente engajadas. O comprimento de engajamento é igual à espessura da peça e ao comprimento da rosca do parafuso.
+        - O parafuso é completamente roscado.
+        - A resistência ao cisalhamento do aço carbono é igual a 60% da resistência à tração:
+        - A resistência ao cisalhamento do aço inoxidável é igual a 55% da resistência à tração:
         - O material do parafuso é mais resistente que o material base.
-        - Parafusos de aço inoxidável com limite de escoamento de 1241 MPa.
+        - Parafusos de aço inoxidável com limite de escoamento de 1.241 MPa.
         - Os parafusos são rosqueados diretamente no material base (sem inserto).
         - Roscas classe 2A.
-        - 65% da carga de tração é usada para cálculo do torque de montagem.
+        - 65% da carga de tração é usada para cálculo do torque de montagem
         - Mínimo de 3 filetes de rosca engajados.
-        - Coeficiente de torque (K) = 0,2.
+        - Coeficiente de torque (K) = 0,2
         ''')
 
         st.markdown('### 🔩 Resistências ao Cisalhamento')
