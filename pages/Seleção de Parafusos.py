@@ -32,7 +32,14 @@ def main():
             # para espessuras -----------------------------------------------------------------
             with col1:
                 with st.container(border=True):
-                    tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', df_parafusos['Tamanho'].unique().tolist(), placeholder='Selecione o Tamanho do Parafuso'),
+                    tamanhos_disponiveis = df_parafusos['Tamanho'].unique().tolist()
+                    tamanho_parafuso = st.selectbox(
+                        'Tamanho Nominal Parafuso',
+                        tamanhos_disponiveis,
+                        index=tamanhos_disponiveis.index(st.session_state.get("tamanho_parafuso")) if st.session_state.get("tamanho_parafuso") in tamanhos_disponiveis else None,
+                        placeholder='Selecione o Tamanho do Parafuso'
+                    )
+                    st.session_state["tamanho_parafuso"] = tamanho_parafuso
                     
                     quantidade_chapas = st.number_input('Quantidade de Chapas', min_value=1, step=1,
                         value=st.session_state.get("quantidade_chapas", 1), placeholder='Numero de Chapas a ser Fixadas')
@@ -85,7 +92,7 @@ def main():
             arruelas = 0
 
         if isinstance(arruelas, list):
-            soma_arruela = df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso[0]), arruelas].sum(axis=1).values[0]
+            soma_arruela = df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso), arruelas].sum(axis=1).values[0]
 
         elif isinstance(arruelas, int):
             soma_arruela = arruelas
@@ -95,10 +102,10 @@ def main():
         espessura_total = soma_espessura + soma_arruela
 
         # Cálculo Ancoragem -----------------------------------------------------------------------------------------------------------------------------------
-        esp_porca = df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso[0]), 'Porca - DIN 934'].reset_index(drop=True)[0]
+        esp_porca = df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso), 'Porca - DIN 934'].reset_index(drop=True)[0]
 
         if isinstance(ancoragem, list):
-            espessura_total = espessura_total + df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso[0]), ancoragem].sum(axis=1).values[0]
+            espessura_total = espessura_total + df_arruelas.loc[df_arruelas['Tamanho Parafuso'] == str(tamanho_parafuso), ancoragem].sum(axis=1).values[0]
             soma_ancoragem = esp_porca
 
         elif tipo_ancoragem == 'Porca - DIN 934' and tipo_arruela_porca != 'Padrão':
@@ -109,7 +116,7 @@ def main():
             soma_ancoragem = ancoragem
         
         # Tabela ---------------------------------------------------------------
-        df_show = df_parafusos.loc[df_parafusos['Tamanho'] == str(tamanho_parafuso[0]),:]
+        df_show = df_parafusos.loc[df_parafusos['Tamanho'] == str(tamanho_parafuso),:]
         df_show['Rosca Engajada'] = df_show['Comprimento'] - espessura_total
 
         if tipo_ancoragem == 'Porca':
