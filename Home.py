@@ -56,7 +56,7 @@ def main():
                 else:
                     classes_disponiveis = df_torque.iloc[:,4:].columns
 
-                classe_parafuso = st.selectbox('Classe do Parafuso', classes_disponiveis)
+                classe_parafuso = st.selectbox('Classe do Parafuso', classes_disponiveis, value=None, placeholder='Escolha a Classe do Parafuso...')
 
                 selecao_parafuso = st.button('Cálculo de Rosca Engajada - Seleção de Parafuso')
 
