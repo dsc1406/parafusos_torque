@@ -11,7 +11,7 @@ def main():
     }
     df_cisalhamento = pd.DataFrame(dados)
 
-    path = os.path.join('Arquivos_extras', 'informações_filtradas.csv')
+    path = os.path.join('Arquivos_extras', 'informacoes_filtradas.csv')
     df = pd.read_csv(path)
     df.sort_values(['Material', 'Torque de Montagem (Nm)'],ascending=True,inplace=True)
 
@@ -26,7 +26,7 @@ def main():
     with col[1]:    
         st.title('🔧BoltMate - Calculadora de Torque em Parafusos🔧') 
         st.caption("Desenvolvido por Diego Carneiro · 2025 - App: BoltMate")
-
+        
         with st.container(border=True):
             
             col = st.columns(2)
@@ -61,7 +61,7 @@ def main():
                 selecao_parafuso = st.button('Cálculo de Rosca Engajada - Seleção de Parafuso')
 
         if calcular: 
-            if material != None and tamanho_parafuso != None:     
+            if material != None and tamanho_parafuso != None and classe_parafuso != None:     
                 df_filtrado = df.loc[(df['Material'] == material) & (df['Rosca'] == tamanho_parafuso),:].reset_index(drop=True)
                 rosca_minima = df_filtrado.loc[0, 'Comprimento Roscado(mm)']
                 torque_max_paraf = df_torque.loc[tamanho_parafuso,classe_parafuso]
@@ -87,7 +87,7 @@ def main():
                         else:
                             st.warning(f'O torque de montagem e maior que o Torque suportado pelo parafuso.')
                             st.info(f'O torque de montagem é {torque_montagem} Nm')
-                            st.info(f'O torque de mpaximo do parafuso é {torque_max_paraf} Nm')
+                            st.info(f'O torque de máximo do parafuso é {int(torque_max_paraf)} Nm')
                     else:
                         st.warning(f'O mínimo de rosca engajada para parafusos {tamanho_parafuso} é de {rosca_minima} mm')                        
                 else:
