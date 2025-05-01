@@ -6,8 +6,8 @@ def main():
     st.set_page_config(page_title="BoltMate - Cálculo de Torque", layout="wide", page_icon='🔧')
 
     dados = {
-    "Material": ["ASTM A36", "Aço Inoxidável 304"],
-    "Resistência ao Cisalhamento (MPa)": [240, 345]
+    "Material": ["ASTM A36", "Aço Inoxidável 304", 'Alumínio 6061-T6'],
+    "Resistência ao Cisalhamento (MPa)": [240, 345, 186]
     }
     df_cisalhamento = pd.DataFrame(dados)
 
@@ -31,12 +31,7 @@ def main():
             
             col = st.columns(2)
             with col[0]:
-                
-                material = st.selectbox('Material do Parafuso', materiais_disponiveis,
-                    index=materiais_disponiveis.index(st.session_state.get("material")) if st.session_state.get("material") in materiais_disponiveis else None,
-                    placeholder='Selecione o Material')
-                st.session_state["material"] = material
-
+                classe_parafuso = st.selectbox('Classe do Parafuso', df_torque.columns, index=None, placeholder='Escolha a Classe do Parafuso...')
                 
                 rosca_engajada = st.number_input('Comprimento de Rosca Engajada (mm)', min_value=0.0, step=0.1,
                     value=st.session_state.get("rosca_engajada", 0.0), placeholder='Digite o Comprimento da Rosca')
@@ -45,25 +40,23 @@ def main():
                 calcular = st.button('Calcular')
                                 
             with col[1]:
-                
+
                 tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', tamanhos_disponiveis,
                     index=tamanhos_disponiveis.index(st.session_state.get("tamanho_parafuso")) if st.session_state.get("tamanho_parafuso") in tamanhos_disponiveis else None,
                     placeholder='Selecione o Tamanho do Parafuso')
                 st.session_state["tamanho_parafuso"] = tamanho_parafuso
 
-                if material == 'Aço Carbono (A36)':
-                    classes_disponiveis = df_torque.iloc[:,:4].columns
-                else:
-                    classes_disponiveis = df_torque.iloc[:,4:].columns
-
-                classe_parafuso = st.selectbox('Classe do Parafuso', classes_disponiveis, index=None, placeholder='Escolha a Classe do Parafuso...')
+                material = st.selectbox('Material da peça de ancoragem', materiais_disponiveis,
+                index=materiais_disponiveis.index(st.session_state.get("material")) if st.session_state.get("material") in materiais_disponiveis else None,
+                placeholder='Selecione o Material')
+                st.session_state["material"] = material
 
                 selecao_parafuso = st.button('Cálculo de Rosca Engajada - Seleção de Parafuso')
 
         if calcular: 
             if material != None and tamanho_parafuso != None and classe_parafuso != None:     
                 df_filtrado = df.loc[(df['Material'] == material) & (df['Rosca'] == tamanho_parafuso),:].reset_index(drop=True)
-                rosca_minima = df_filtrado.loc[0, 'Comprimento Roscado(mm)']
+                rosca_minima = round(df_filtrado.loc[0, 'Comprimento Roscado(mm)'],2)
                 torque_max_paraf = df_torque.loc[tamanho_parafuso,classe_parafuso]
 
                 if rosca_engajada != None:
@@ -72,22 +65,25 @@ def main():
 
                         if torque_montagem < torque_max_paraf:
                             with st.container(border=True):
-                                col = st.columns(3)
+                                col = st.columns(2)
 
-                                with col[0]:
-                                    carga_maxima = round((df_filtrado.loc[0,'Carga Máxima (kg)'] * rosca_engajada) / df_filtrado.loc[0,'Comprimento Roscado(mm)'])
-                                    st.metric(label='Carga Máxima', value=str(carga_maxima) + ' kg', border=True)
-
-                                with col[1]:                                
+                                with col[0]:                                
                                     st.metric(label='Torque de Montagem', value=str(torque_montagem) + ' Nm', border=True)
 
-                                with col[2]:
-                                    torque_max = round((df_filtrado.loc[0,'Torque Máximo (Nm)'] * rosca_engajada) / df_filtrado.loc[0,'Comprimento Roscado(mm)'])
-                                    st.metric(label='Torque Máximo', value=str(torque_max) + ' Nm', border=True)
+                                with col[1]:
+                                    st.metric(label='Torque Suportado pelo Parafuso', value=str(round(torque_max_paraf)) + ' Nm', border=True)
+                            st.info('O torque foi limitado pela peça de acoragem')
                         else:
-                            st.warning(f'O torque de montagem e maior que o Torque suportado pelo parafuso.')
-                            st.info(f'O torque de montagem é {torque_montagem} Nm')
-                            st.info(f'O torque de máximo do parafuso é {int(torque_max_paraf)} Nm')
+                            with st.container(border=True):
+                                col = st.columns(2)
+
+                                with col[0]:                                
+                                    st.metric(label='Torque de Montagem', value=str(round((torque_max_paraf * 0.85))) + ' Nm', border=True)
+
+                                with col[1]:
+                                    st.metric(label='Torque Suportado pela Peça de Acoragem', value=str(torque_montagem) + ' Nm', border=True)
+                            st.info('O torque foi limitado pelo parafuso')
+
                     else:
                         st.warning(f'O mínimo de rosca engajada para parafusos {tamanho_parafuso} é de {rosca_minima} mm')                        
                 else:

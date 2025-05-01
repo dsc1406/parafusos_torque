@@ -33,10 +33,8 @@ def main():
             with col1:
                 with st.container(border=True):
                     tamanhos_disponiveis = df_parafusos['Tamanho'].unique().tolist()
-                    tamanho_parafuso = st.selectbox(
-                        'Tamanho Nominal Parafuso',
-                        tamanhos_disponiveis,
-                        index=tamanhos_disponiveis.index(st.session_state.get("tamanho_parafuso")) if st.session_state.get("tamanho_parafuso") in tamanhos_disponiveis else None,
+                    tamanho_parafuso = st.selectbox('Tamanho Nominal Parafuso', tamanhos_disponiveis,
+                        index=tamanhos_disponiveis.index(st.session_state.get("tamanho_parafuso")) if st.session_state.get("tamanho_parafuso") in tamanhos_disponiveis else 0,
                         placeholder='Selecione o Tamanho do Parafuso'
                     )
                     st.session_state["tamanho_parafuso"] = tamanho_parafuso
